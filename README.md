@@ -1,3 +1,58 @@
+# Setup steps
+## Install cuda drivers and cuda toolkit
+We followed the [varhowto guide](https://varhowto.com/install-pytorch-ubuntu-20-04/?fbclid=IwAR3KqNCqqHjBrQJgYczFgOPAnS0O0ZQKRsBHFab2irbEhENJmay9-JUXP_A). 
+
+1. You can install drivers via "Additional Drivers" app GUI or by running `apt` command with specific driver version e.g.
+    ```shell script
+    sudo apt install nvidia-driver-515
+    ```
+    Note that the version of nvidia-cuda-toolkit that corresponds to selected nvidia-driver may not be yet supported by some libraries (e.g. pytorch), so you might have to choose the older one. You can check the nvidia-driver and nvidia-cuda-toolkit mappings in [nvidia documentation](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html#id4). The newest pytorch supported nvidia-cuda-toolkit versions can be found on the [pytorch webpage](https://pytorch.org/get-started/locally/).
+
+2. (Probably not required for running nvidia-docker) Install the corresponding nvidia-cuda-toolkit:
+   ```shell script
+    sudo apt install nvidia-cuda-toolkit
+    ```
+
+3. (Optional) Check if CUDA is installed:
+   ```shell script
+   nvcc -V
+   nvidia-smi
+   ```
+
+## Install docker
+We followed the [docker guide](https://docs.docker.com/engine/install/ubuntu/?fbclid=IwAR0tHGyOiRBsyTygAh1fQ60qQ-QrUMJtOVqLv3qBOssdpU3q4Crcag70dK4#install-using-the-repository).
+
+We also made the following [post-installation steps](https://docs.docker.com/engine/install/linux-postinstall/).
+
+
+## Install NVIDIA Container Toolkit
+We followed the [nvidia guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#setting-up-nvidia-container-toolkit).
+
+
+## Check the version of nvidia/cuda docker image in Dockerfile
+1. Check the version of CUDA you have installed in your system by running:
+   ```shell script
+   nvidia-smi
+   ```
+2. Get your OS version:
+   ```shell script
+   . /etc/os-release;echo $ID$VERSION_ID
+   ```
+3. Update the first line of Dockerfile by replacing:
+   ```
+   FROM nvidia/cuda:11.7.0-devel-ubuntu22.04
+   ``` 
+   with your CUDA and OS versions:
+   ```
+   FROM nvidia/cuda:<cuda-version>-devel-<os-version>
+   ```
+
+## Notes
+- Datasets download may raise some errors due to connection issues. If encountered, try rerunning download a few times.
+- We added constraint on `numpy` version in `requirements.txt`, as the newest one was causing errors. We also removed some old CUDA dependencies installation, updated python version and added installation of torchvision and torchaudio.
+
+
+
 *ServiceNow completed its acquisition of Element AI on January 8, 2021. All references to Element AI in the materials that are part of this project should refer to ServiceNow.*
 
 # N-BEATS
