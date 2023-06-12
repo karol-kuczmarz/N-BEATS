@@ -1,7 +1,7 @@
 gin-config
 fire
 matplotlib
-numpy
+numpy==1.21.6
 pandas
 patool
 torch
